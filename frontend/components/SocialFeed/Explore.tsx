@@ -7,7 +7,7 @@ import PostCard from "@/components/PostCard";
 const API_BASE = "http://localhost:5000/api";
 
 export default function Explore() {
-  const [posts, setPosts] = useState<any[]>([]);
+  const [posts, setPosts]           = useState<any[]>([]);
   const [currentUser, setCurrentUser] = useState<any>(null);
 
   const token = useMemo(() => {
@@ -27,27 +27,30 @@ export default function Explore() {
       .catch((err) => console.error("Error fetching posts:", err));
   }, []);
 
-  // ✅ Shared handlers passed into PostCard
-  const handlePostUpdate = (updatedPost: any) => {
+  const handlePostUpdate = (updatedPost: any) =>
     setPosts((prev) => prev.map((p) => (p._id === updatedPost._id ? updatedPost : p)));
-  };
 
-  const handlePostDelete = (postId: string) => {
+  const handlePostDelete = (postId: string) =>
     setPosts((prev) => prev.filter((p) => p._id !== postId));
-  };
 
   return (
-    <section className="min-h-screen bg-white">
+    <section className="min-h-screen bg-gray-50 dark:bg-[#0F1117]">
       <div className="w-full max-w-4xl mx-auto px-6 py-24 space-y-8">
 
         <div className="flex justify-end">
           <Link
             href="/create"
-            className="px-5 py-2 rounded-xl bg-gray-950 text-white text-sm font-medium hover:bg-gray-800 transition"
+            className="px-5 py-2 rounded-xl bg-gray-950 dark:bg-indigo-600 text-white text-sm font-medium hover:bg-gray-800 dark:hover:bg-indigo-700 transition"
           >
             + Create Post
           </Link>
         </div>
+
+        {posts.length === 0 && (
+          <p className="text-center text-gray-400 dark:text-slate-500 pt-20">
+            No posts yet. Be the first to post!
+          </p>
+        )}
 
         {posts.map((post) => (
           <PostCard

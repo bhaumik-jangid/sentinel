@@ -12,8 +12,8 @@ function timeAgo(dateStr: string): string {
   const seconds = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
   const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
   if (seconds < 60) return "just now";
-  if (seconds < 3600) return rtf.format(-Math.floor(seconds / 60), "minute");
-  if (seconds < 86400) return rtf.format(-Math.floor(seconds / 3600), "hour");
+  if (seconds < 3600)  return rtf.format(-Math.floor(seconds / 60),   "minute");
+  if (seconds < 86400) return rtf.format(-Math.floor(seconds / 3600),  "hour");
   if (seconds < 604800) return rtf.format(-Math.floor(seconds / 86400), "day");
   return rtf.format(-Math.floor(seconds / 604800), "week");
 }
@@ -39,14 +39,12 @@ export default function ProfilePage() {
 
     const authHeader = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
 
-    axios
-      .get(`${API_BASE}/users/${parsedUser.id}/posts`)
+    axios.get(`${API_BASE}/users/${parsedUser.id}/posts`)
       .then((res) => setPosts(Array.isArray(res.data) ? res.data : []))
       .catch(() => setPosts([]))
       .finally(() => setLoadingPosts(false));
 
-    axios
-      .get(`${API_BASE}/contact/mine`, authHeader)
+    axios.get(`${API_BASE}/contact/mine`, authHeader)
       .then((res) => setContactMessages(Array.isArray(res.data) ? res.data : []))
       .catch(() => setContactMessages([]));
   }, []);
@@ -60,7 +58,7 @@ export default function ProfilePage() {
   if (!user) return null;
 
   return (
-    <section className="min-h-screen bg-gray-50 dark:bg-gray-950 px-6 py-20">
+    <section className="min-h-screen bg-gray-50 dark:bg-[#0F1117] px-6 py-20">
       <div className="max-w-4xl mx-auto space-y-16">
 
         {/* Profile Card */}
@@ -78,22 +76,21 @@ export default function ProfilePage() {
 
         {/* Posts */}
         <div>
-          {/* ✅ Heading row with Create Post button */}
           <div className="flex items-center justify-between mb-8">
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-[#E2E8F0]">
               Your Posts
             </h3>
             <Link
               href="/create"
-              className="px-4 py-2 rounded-xl bg-gray-950 dark:bg-white text-white dark:text-gray-950 text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition"
+              className="px-4 py-2 rounded-xl bg-gray-950 dark:bg-indigo-600 text-white text-sm font-medium hover:bg-gray-800 dark:hover:bg-indigo-700 transition"
             >
               + Create Post
             </Link>
           </div>
 
-          {loadingPosts && <p className="text-gray-400">Loading posts...</p>}
+          {loadingPosts && <p className="text-gray-400 dark:text-slate-500">Loading posts...</p>}
           {!loadingPosts && posts.length === 0 && (
-            <p className="text-gray-500">You haven't posted anything yet.</p>
+            <p className="text-gray-500 dark:text-slate-400">You haven't posted anything yet.</p>
           )}
 
           <div className="space-y-8">
@@ -110,11 +107,11 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Contact Messages — collapsible */}
-        <div className="border-t border-gray-100 dark:border-gray-800 pt-8">
+        {/* Contact Messages */}
+        <div className="border-t border-gray-100 dark:border-[#2A2D3E] pt-8">
           <button
             onClick={() => setShowMessages((v) => !v)}
-            className="text-sm text-gray-500 hover:text-gray-900 dark:hover:text-white flex items-center gap-2 transition"
+            className="text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-[#E2E8F0] flex items-center gap-2 transition"
           >
             📨 Your support messages ({contactMessages.length})
             <span>{showMessages ? "▲" : "▼"}</span>
@@ -123,19 +120,15 @@ export default function ProfilePage() {
           {showMessages && (
             <div className="mt-4 space-y-3">
               {contactMessages.length === 0 && (
-                <p className="text-sm text-gray-400">No messages sent yet.</p>
+                <p className="text-sm text-gray-400 dark:text-slate-500">No messages sent yet.</p>
               )}
               {contactMessages.map((msg: any) => (
                 <div
                   key={msg._id}
-                  className="rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 p-4 text-sm"
+                  className="rounded-xl border border-gray-100 dark:border-[#2A2D3E] bg-white dark:bg-[#1A1D27] p-4 text-sm"
                 >
-                  <p className="text-gray-900 dark:text-gray-100 font-medium">
-                    {msg.message}
-                  </p>
-                  <p className="text-gray-400 text-xs mt-1">
-                    {timeAgo(msg.createdAt)}
-                  </p>
+                  <p className="text-gray-900 dark:text-[#E2E8F0] font-medium">{msg.message}</p>
+                  <p className="text-gray-400 dark:text-slate-500 text-xs mt-1">{timeAgo(msg.createdAt)}</p>
                 </div>
               ))}
             </div>
