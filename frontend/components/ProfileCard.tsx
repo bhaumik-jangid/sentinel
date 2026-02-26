@@ -1,5 +1,8 @@
 "use client";
 
+import { Mail, Calendar, ShieldCheck, Copy, Check } from "lucide-react";
+import { useState } from "react";
+
 interface ProfileCardProps {
   user: {
     id: string;
@@ -12,62 +15,112 @@ interface ProfileCardProps {
 }
 
 export default function ProfileCard({ user, isOwnProfile = false, onLogout }: ProfileCardProps) {
-  const initial = user.name?.charAt(0).toUpperCase();
+  const [copied, setCopied] = useState(false);
+
+  const initial  = user.name?.charAt(0).toUpperCase();
+  const initials = user.name?.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(user.id);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
-    <div className="w-full max-w-xl bg-white dark:bg-[#1A1D27] rounded-3xl shadow-xl border border-gray-100 dark:border-[#2A2D3E] p-10">
+    <div className="w-full max-w-xl overflow-hidden rounded-3xl border border-gray-100 dark:border-[#2A2D3E] bg-white dark:bg-[#1A1D27] shadow-xl">
 
-      {/* Avatar + Name */}
-      <div className="flex flex-col items-center text-center">
-        <div className="w-24 h-24 rounded-full bg-indigo-600 dark:bg-indigo-700 text-white flex items-center justify-center text-3xl font-semibold shadow-md">
-          {initial}
-        </div>
-
-        <h2 className="mt-5 text-2xl font-semibold text-gray-950 dark:text-[#E2E8F0]">
-          {user.name}
-        </h2>
-
-        {user.email && (
-          <p className="text-gray-500 dark:text-slate-400 text-sm mt-1">
-            {user.email}
-          </p>
-        )}
+      {/* ✅ Cover banner */}
+      <div className="relative h-32 bg-linear-to-br from-indigo-500 via-indigo-600 to-violet-600 dark:from-indigo-700 dark:via-indigo-800 dark:to-violet-900">
+        {/* subtle pattern overlay */}
+        <div className="absolute inset-0 opacity-20"
+          style={{ backgroundImage: "radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)", backgroundSize: "40px 40px" }}
+        />
       </div>
 
-      {/* Divider */}
-      <div className="my-8 h-px bg-gray-100 dark:bg-[#2A2D3E]" />
+      <div className="px-8 pb-8">
 
-      {/* Details */}
-      <div className="space-y-5 text-sm">
-        <div className="flex justify-between text-gray-600 dark:text-slate-400">
-          <span className="font-medium text-gray-800 dark:text-slate-300">User ID</span>
-          <span className="truncate max-w-55 text-right">{user.id}</span>
-        </div>
-
-        <div className="flex justify-between text-gray-600 dark:text-slate-400">
-          <span className="font-medium text-gray-800 dark:text-slate-300">Account Status</span>
-          <span className="text-green-600 dark:text-green-400 font-medium">Active</span>
-        </div>
-
-        {user.createdAt && (
-          <div className="flex justify-between text-gray-600 dark:text-slate-400">
-            <span className="font-medium text-gray-800 dark:text-slate-300">Member Since</span>
-            <span>{new Date(user.createdAt).toLocaleDateString()}</span>
+        {/* ✅ Avatar — overlaps the banner */}
+        <div className="relative -mt-12 mb-4 flex items-end justify-between">
+          <div className="w-24 h-24 rounded-2xl bg-indigo-600 dark:bg-indigo-700 text-white flex items-center justify-center text-3xl font-bold shadow-lg ring-4 ring-white dark:ring-[#1A1D27]">
+            {initials || initial}
           </div>
-        )}
-      </div>
 
-      {/* Logout */}
-      {isOwnProfile && (
-        <div className="mt-10">
+          {/* ✅ Active badge */}
+          <span className="mb-1 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 text-xs font-medium">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+            Active
+          </span>
+        </div>
+
+        {/* ✅ Name + email */}
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-gray-950 dark:text-[#E2E8F0] leading-tight">
+            {user.name}
+          </h2>
+          {user.email && (
+            <div className="flex items-center gap-1.5 mt-1">
+              <Mail size={13} className="text-gray-400 dark:text-slate-500" />
+              <p className="text-sm text-gray-500 dark:text-slate-400">{user.email}</p>
+            </div>
+          )}
+        </div>
+
+        {/* ✅ Info rows */}
+        <div className="space-y-3 mb-8">
+
+          {/* Member since */}
+          {user.createdAt && (
+            <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-gray-50 dark:bg-[#13151F] border border-gray-100 dark:border-[#2A2D3E]">
+              <div className="flex items-center gap-2.5 text-sm text-gray-500 dark:text-slate-400">
+                <Calendar size={15} className="text-indigo-400" />
+                <span>Member Since</span>
+              </div>
+              <span className="text-sm font-medium text-gray-800 dark:text-slate-200">
+                {new Date(user.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
+              </span>
+            </div>
+          )}
+
+          {/* Account status */}
+          <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-gray-50 dark:bg-[#13151F] border border-gray-100 dark:border-[#2A2D3E]">
+            <div className="flex items-center gap-2.5 text-sm text-gray-500 dark:text-slate-400">
+              <ShieldCheck size={15} className="text-indigo-400" />
+              <span>Account Status</span>
+            </div>
+            <span className="text-sm font-medium text-green-600 dark:text-green-400">Verified</span>
+          </div>
+
+          {/* User ID with copy */}
+          <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-gray-50 dark:bg-[#13151F] border border-gray-100 dark:border-[#2A2D3E]">
+            <div className="flex items-center gap-2.5 text-sm text-gray-500 dark:text-slate-400">
+              <span className="text-indigo-400 font-mono text-xs">#</span>
+              <span>User ID</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-mono text-gray-500 dark:text-slate-400 truncate max-w-32">
+                {user.id.slice(0, 16)}…
+              </span>
+              <button
+                onClick={handleCopy}
+                className="text-gray-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors"
+                title="Copy full ID"
+              >
+                {copied ? <Check size={13} className="text-green-500" /> : <Copy size={13} />}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* ✅ Logout button */}
+        {isOwnProfile && (
           <button
             onClick={onLogout}
-            className="w-full py-3 rounded-xl bg-gray-950 dark:bg-rose-600 text-white text-sm font-medium hover:bg-gray-800 dark:hover:bg-rose-700 transition"
+            className="w-full py-3 rounded-xl bg-gray-950 dark:bg-rose-600/90 text-white text-sm font-semibold hover:bg-gray-800 dark:hover:bg-rose-600 active:scale-[0.98] transition-all duration-200 shadow-sm"
           >
-            Logout
+            Sign Out
           </button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
