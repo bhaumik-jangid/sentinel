@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const authRoutes = require("./routes/authRoutes");
 const postRoutes = require("./routes/postRoutes");
 const userRoutes = require("./routes/userRoutes");
+const contactRoutes = require("./routes/contactRoutes");
 
 
 const app = express(); // ✅ Create app FIRST
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use("/api/users", userRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/user/:id", userRoutes);
+app.use("/api/contact", contactRoutes);
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI)

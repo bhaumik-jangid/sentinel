@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import ThemeToggle from "./ThemeToggle";
+
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -93,6 +95,8 @@ export default function Navbar() {
                 </a>
               </>
             )}
+          <ThemeToggle />
+
           </div>
 
           {/* Mobile Button */}

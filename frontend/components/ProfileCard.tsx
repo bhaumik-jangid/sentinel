@@ -45,7 +45,7 @@ export default function ProfileCard({
       <div className="space-y-5 text-sm">
         <div className="flex justify-between text-gray-600">
           <span className="font-medium text-gray-800">User ID</span>
-          <span className="truncate max-w-[220px] text-right">
+          <span className="truncate max-w-55 text-right">
             {user.id}
           </span>
         </div>
